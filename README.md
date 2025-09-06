@@ -136,7 +136,8 @@ These appear in the **History** table and in the **Link** field.
 * **Nothing plots / GUI empty**: Ensure the selected log file is correct and growing; check permissions. Try attaching to the log file after the job starts.
 * **RMSD stays NaN**: The number of atoms in the incoming geometry must match the reference (first) geometry. If your job changes atom count/order mid‑run, RMSD to first won’t be defined for those steps.
 * **Too many alerts**: Increase thresholds in **Run Info**.
-* **Emergency cleanup**: On Linux, use **Kill lXXX.exe** to terminate orphaned Gaussian link processes.
+* **Emergency cleanup**: On Linux, use **Kill lXXX.exe** to terminate orphaned Gaussian link processes. (or kill gaussian job). Please be aware that closing the GUI won't kill the job (Also stop button won't work)
+
 * **Coordinate header mismatch**: GauLogger expects the `Number Number Type X Y Z` header format. If your logs differ, update the regex in `COLUMN_HEADER_RE` accordingly.
 
 ---
@@ -169,3 +170,14 @@ python GauLogger.py
 ## License
 
 MIT License © 2025 — Devashish Das
+
+---
+
+## Disclaimer
+
+GauLogger is an independent open-source project released under the MIT License.  
+It is **not affiliated with, endorsed by, or distributed with Gaussian, Inc.**  
+
+- You must have a properly licensed copy of Gaussian16 to perform calculations.  
+- GauLogger only monitors and parses Gaussian log files; it does not contain or redistribute any part of Gaussian’s proprietary code.  
+- All trademarks, service marks, and product names mentioned are the property of their respective owners.
