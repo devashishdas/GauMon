@@ -2,6 +2,7 @@
 
 **GauMon** (Gaussian Live Log Monitor) is a PyQt5 desktop app for real‑time monitoring of Gaussian16 runs and post‑hoc parsing of existing log files. It plots SCF energy, RMS force, and geometry drift (RMSD and **Max displacement vs initial**) and includes alarms with user‑set thresholds.
 
+![Dashboard Screenshot](Demo.png)
 ---
 
 ## Highlights
