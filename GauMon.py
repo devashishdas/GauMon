@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
     QPushButton, QLabel, QLineEdit, QTextEdit, QTableWidget, QTableWidgetItem,
     QGroupBox, QFormLayout, QMessageBox, QSplitter, QSizePolicy, QDoubleSpinBox
 )
+from PyQt5.QtGui import QTextCursor
 
 # ---------- Defaults (user can change in GUI) ----------
 SIZE_THRESHOLD_DEFAULT = 8.0      # now "Max displacement" threshold
@@ -311,6 +312,13 @@ class BaseMonitor(QWidget):
         self.plot_rmsd = self.curve_rmsd_plot = self.curve_rmsd_prev = None
         self.rmsd_threshold_line = self.rmsd_overlay = None
 
+        if pg:
+            self.plot_rmsd = pg.PlotWidget(title="RMSD")
+            self.plot_rmsd.showGrid(x=True, y=True)
+            self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, name="vs initial")
+            self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, name="vs previous")
+            self.plot_rmsd.addLegend()
+
         # controls for thresholds (wired in tabs)
         self.spin_disp_thr: Optional[QDoubleSpinBox] = None
         self.spin_rmsd_thr: Optional[QDoubleSpinBox] = None
@@ -319,6 +327,18 @@ class BaseMonitor(QWidget):
         self.poll_timer = QTimer(self); self.poll_timer.setInterval(800); self.poll_timer.timeout.connect(self.poll)
         self.clock_timer = QTimer(self); self.clock_timer.setInterval(1000); self.clock_timer.timeout.connect(self.update_timer)
         self.alarm_timer = QTimer(self); self.alarm_timer.setInterval(450); self.alarm_timer.timeout.connect(self._tick_alarm_blink)
+     
+        # --- run state / stall detection ---
+        self._last_bytes_seen: int = 0
+        self._last_activity_ts: float = time.time()
+        self._stall_seconds_warn: int = 180  # consider stalled if no growth/events for 3 min
+        self._finished: bool = False
+        self._stalled: bool = False
+        self._error: bool = False
+
+        # log-tail controls
+        self.tail_autoscroll: bool = True
+        self.tail_paused: bool = False
 
     # ---------- Shared parsing helpers ----------
     def _update_scf_history(self, log_path: Path) -> bool:
@@ -455,6 +475,7 @@ class BaseMonitor(QWidget):
 
     # ---------- The single shared poll ----------
     def poll(self):
+        
         if not self.current_log: return
         st = parse_log_file(self.current_log)
 
@@ -505,7 +526,40 @@ class BaseMonitor(QWidget):
 
         self._refresh_energy_table()
         self._refresh_plots()
-        self.tail_view.setPlainText(st.tail_text)
+        #self.tail_view.setPlainText(st.tail_text)
+        self._update_tail_view(st.tail_text)
+
+
+        # --- record activity ---
+        try:
+            sz = self.current_log.stat().st_size
+        except Exception:
+            sz = 0
+        
+        new_bytes = (sz - self._last_bytes_seen)
+        if new_bytes > 0 or st.last_scf_e is not None or st.step is not None or st.last_enter_link:
+            self._last_activity_ts = time.time()
+            self._stalled = False  # recovered
+        self._last_bytes_seen = max(self._last_bytes_seen, sz)
+        
+        # --- termination checks from content ---
+        if st.termination == 'normal' and not self._finished:
+            self._set_run_state(finished=True)
+            return
+        
+        if st.termination == 'error' and not self._error:
+            self._set_run_state(error=True)
+            return
+        
+        # --- stall detection: no growth/events for N seconds ---
+        idle = time.time() - self._last_activity_ts
+        if idle >= self._stall_seconds_warn and not self._finished and not self._error:
+            why = f"{int(idle)} s without file growth or new SCF/steps"
+            self._set_run_state(stalled=True, reason=why)
+        
+        # --- show ETA text even when finished/error won't update further ---
+        self.eta_line.setText(self._compute_eta_text())
+
 
     # ---------- Table + plots ----------
     def _refresh_energy_table(self):
@@ -624,6 +678,49 @@ class BaseMonitor(QWidget):
         if self.rmsd_threshold_line is not None:
             try: self.rmsd_threshold_line.setPos(self.rmsd_alarm_threshold)
             except Exception: pass
+    
+    #==== Updated (2025.09.10 01:44:10 AM)
+    def _set_run_state(self, finished=False, error=False, stalled=False, reason: str = ""):
+        if finished:
+            self._finished = True; self._error = False; self._stalled = False
+            self.alarm_banner.setText("✓ Gaussian run finished")
+            self.alarm_banner.setStyleSheet("padding:6px; border-radius:6px; font-weight:800; color:white; background:#2e7d32;")
+            self.stop_monitors()
+        elif error:
+            self._error = True; self._finished = False; self._stalled = False
+            self.alarm_banner.setText("✖ Error termination detected")
+            self.alarm_banner.setStyleSheet("padding:6px; border-radius:6px; font-weight:800; color:white; background:#c21807;")
+            self.stop_monitors()
+        elif stalled and not self._finished and not self._error:
+            self._stalled = True
+            self.alarm_banner.setText(f"⚠ No activity ({reason}). Possibly stalled.")
+            self.alarm_banner.setStyleSheet("padding:6px; border-radius:6px; font-weight:800; color:black; background:#ffd54f;")
+            # keep timers running so it can recover if file grows again
+    
+    def _update_tail_view(self, text: str):
+        if self.tail_paused:
+            return  # do not touch the view while paused
+        #self.tail_view.setPlainText(text)
+        self._update_tail_view(st.tail_text)
+
+        if self.tail_autoscroll:
+            cursor = self.tail_view.textCursor()
+            cursor.movePosition(QTextCursor.End)
+            self.tail_view.setTextCursor(cursor)
+            self.tail_view.ensureCursorVisible()
+
+    def _toggle_tail_pause(self, on: bool):
+        self.tail_paused = on
+        if not on:
+            # on resume, refresh & jump to end once
+            self._update_tail_view(parse_log_file(self.current_log).tail_text if self.current_log else "")
+    
+    def _toggle_autoscroll(self, on: bool):
+        self.tail_autoscroll = on
+        if on and not self.tail_paused:
+            self._update_tail_view(parse_log_file(self.current_log).tail_text if self.current_log else "")
+
+
 
 # ======================== TAB: RUN GAUSSIAN ========================
 class RunGaussianTab(BaseMonitor):
@@ -641,6 +738,15 @@ class RunGaussianTab(BaseMonitor):
         self.start_btn = QPushButton('Start')
         self.stop_btn = QPushButton('Stop'); self.stop_btn.setEnabled(False)
         self.kill_btn = QPushButton('Kill lXXX.exe')
+
+        self.btn_pause_tail = QPushButton("Pause Tail")
+        self.btn_pause_tail.setCheckable(True)
+        self.btn_pause_tail.toggled.connect(self._toggle_tail_pause)
+        
+        self.btn_autoscroll = QPushButton("Auto-Scroll End")
+        self.btn_autoscroll.setCheckable(True)
+        self.btn_autoscroll.setChecked(True)
+        self.btn_autoscroll.toggled.connect(self._toggle_autoscroll)
 
         # --- left panel (Run Info / Energy / History) ---
         self.alarm_banner = QLabel('🚨 DRIFT DETECTED'); self.alarm_banner.setVisible(False)
