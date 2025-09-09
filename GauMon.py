@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
     QPushButton, QLabel, QLineEdit, QTextEdit, QTableWidget, QTableWidgetItem,
     QGroupBox, QFormLayout, QMessageBox, QSplitter, QSizePolicy, QDoubleSpinBox
 )
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtGui import QTextCursor  # (already present)
 
 # ---------- Defaults (user can change in GUI) ----------
 SIZE_THRESHOLD_DEFAULT = 8.0      # now "Max displacement" threshold
@@ -313,11 +313,12 @@ class BaseMonitor(QWidget):
         self.rmsd_threshold_line = self.rmsd_overlay = None
 
         if pg:
+            # ADDED: default RMSD plot (legend + named curves) for clarity in any tab using BaseMonitor plots
             self.plot_rmsd = pg.PlotWidget(title="RMSD")
             self.plot_rmsd.showGrid(x=True, y=True)
-            self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, name="vs initial")
-            self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, name="vs previous")
-            self.plot_rmsd.addLegend()
+            self.plot_rmsd.addLegend()  # ADDED
+            self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, name="vs initial")  # ADDED
+            self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, name="vs previous")  # ADDED
 
         # controls for thresholds (wired in tabs)
         self.spin_disp_thr: Optional[QDoubleSpinBox] = None
@@ -504,8 +505,10 @@ class BaseMonitor(QWidget):
             self.cm_line.setText(f"{st.charge}/{st.mult}")
         self.eta_line.setText(self._compute_eta_text())
 
+        # CHANGED: RMSD readout clarifies which is which
         if self.rmsd_current is not None and np.isfinite(self.rmsd_current):
-            self.rmsd_line.setText(f"{self.rmsd_current:.3f} Å")
+            prev_delta = (self.prev_rmsd_series[-1] if self.prev_rmsd_series else 0.0)
+            self.rmsd_line.setText(f"{self.rmsd_current:.3f} Å (vs initial) | Δprev: {prev_delta:.3f} Å (vs previous)")  # ADDED
         else:
             self.rmsd_line.setText('—')
 
@@ -526,9 +529,8 @@ class BaseMonitor(QWidget):
 
         self._refresh_energy_table()
         self._refresh_plots()
-        #self.tail_view.setPlainText(st.tail_text)
-        self._update_tail_view(st.tail_text)
-
+        # CHANGED: use helper to respect Pause + Auto-Scroll
+        self._update_tail_view(st.tail_text)  # ADDED
 
         # --- record activity ---
         try:
@@ -698,11 +700,10 @@ class BaseMonitor(QWidget):
             # keep timers running so it can recover if file grows again
     
     def _update_tail_view(self, text: str):
+        # ADDED: Pause-aware tail update + auto-scroll-to-end
         if self.tail_paused:
-            return  # do not touch the view while paused
-        #self.tail_view.setPlainText(text)
-        self._update_tail_view(st.tail_text)
-
+            return
+        self.tail_view.setPlainText(text)  # CHANGED: was a recursive call by mistake
         if self.tail_autoscroll:
             cursor = self.tail_view.textCursor()
             cursor.movePosition(QTextCursor.End)
@@ -739,14 +740,15 @@ class RunGaussianTab(BaseMonitor):
         self.stop_btn = QPushButton('Stop'); self.stop_btn.setEnabled(False)
         self.kill_btn = QPushButton('Kill lXXX.exe')
 
-        self.btn_pause_tail = QPushButton("Pause Tail")
-        self.btn_pause_tail.setCheckable(True)
-        self.btn_pause_tail.toggled.connect(self._toggle_tail_pause)
+        # ADDED: Tail control buttons (pause + autoscroll)
+        self.btn_pause_tail = QPushButton("Pause Tail")  # ADDED
+        self.btn_pause_tail.setCheckable(True)           # ADDED
+        self.btn_pause_tail.toggled.connect(self._toggle_tail_pause)  # ADDED
         
-        self.btn_autoscroll = QPushButton("Auto-Scroll End")
-        self.btn_autoscroll.setCheckable(True)
-        self.btn_autoscroll.setChecked(True)
-        self.btn_autoscroll.toggled.connect(self._toggle_autoscroll)
+        self.btn_autoscroll = QPushButton("Auto-Scroll End")  # ADDED
+        self.btn_autoscroll.setCheckable(True)                # ADDED
+        self.btn_autoscroll.setChecked(True)                  # ADDED
+        self.btn_autoscroll.toggled.connect(self._toggle_autoscroll)  # ADDED
 
         # --- left panel (Run Info / Energy / History) ---
         self.alarm_banner = QLabel('🚨 DRIFT DETECTED'); self.alarm_banner.setVisible(False)
@@ -817,7 +819,16 @@ class RunGaussianTab(BaseMonitor):
 
         # --- log tab ---
         self.tail_view = QTextEdit(); self.tail_view.setReadOnly(True)
-        log_tab = QWidget(); log_layout = QVBoxLayout(); log_layout.addWidget(self.tail_view); log_tab.setLayout(log_layout)
+        log_tab = QWidget()
+        log_layout = QVBoxLayout()
+        # ADDED: put tail control buttons above the log view
+        log_controls = QHBoxLayout()  # ADDED
+        log_controls.addWidget(self.btn_pause_tail)  # ADDED
+        log_controls.addWidget(self.btn_autoscroll)  # ADDED
+        log_controls.addStretch(1)  # ADDED
+        log_layout.addLayout(log_controls)  # ADDED
+        log_layout.addWidget(self.tail_view)
+        log_tab.setLayout(log_layout)
 
         # --- root tabs ---
         dash = QWidget(); dash_layout = QVBoxLayout(); dash_layout.addWidget(top); dash_layout.addWidget(bottom); dash.setLayout(dash_layout)
@@ -855,9 +866,11 @@ class RunGaussianTab(BaseMonitor):
         self.disp_overlay = TextItem('', color=(200, 0, 0), anchor=(0.5, 1.2)); self.plot_disp.addItem(self.disp_overlay)
         self.graph_tabs.addTab(self.plot_disp, 'Displacement')
 
+        # CHANGED: add legend + names so it’s clear which RMSD curve is which
         self.plot_rmsd = pg.PlotWidget(title='RMSD vs geometry (Å)'); self.plot_rmsd.showGrid(x=True, y=True)
-        self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, symbol='o')
-        self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, symbol='o')
+        self.plot_rmsd.addLegend()  # ADDED
+        self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, symbol='o', name='vs initial')  # CHANGED
+        self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, symbol='o', name='vs previous')  # CHANGED
         self.rmsd_threshold_line = pg.InfiniteLine(pos=self.rmsd_alarm_threshold, angle=0, pen=PEN_DASH_BLUE); self.plot_rmsd.addItem(self.rmsd_threshold_line)
         self.rmsd_overlay = TextItem('', color=(0, 70, 200), anchor=(0.5, 1.2)); self.plot_rmsd.addItem(self.rmsd_overlay)
         self.graph_tabs.addTab(self.plot_rmsd, 'RMSD')
@@ -954,6 +967,15 @@ class ParseOnlyTab(BaseMonitor):
         self.log_btn = QPushButton('Browse .log…')
         self.attach_btn = QPushButton('Attach')
 
+        # ADDED: Tail control buttons (pause + autoscroll) for ParseOnly too
+        self.btn_pause_tail = QPushButton("Pause Tail")  # ADDED
+        self.btn_pause_tail.setCheckable(True)           # ADDED
+        self.btn_pause_tail.toggled.connect(self._toggle_tail_pause)  # ADDED
+        self.btn_autoscroll = QPushButton("Auto-Scroll End")  # ADDED
+        self.btn_autoscroll.setCheckable(True)                # ADDED
+        self.btn_autoscroll.setChecked(True)                  # ADDED
+        self.btn_autoscroll.toggled.connect(self._toggle_autoscroll)  # ADDED
+
         # left panel
         self.alarm_banner = QLabel('🚨 DRIFT DETECTED'); self.alarm_banner.setVisible(False)
         self.alarm_banner.setAlignment(Qt.AlignCenter)
@@ -1015,7 +1037,16 @@ class ParseOnlyTab(BaseMonitor):
 
         # log tab
         self.tail_view = QTextEdit(); self.tail_view.setReadOnly(True)
-        log_tab = QWidget(); log_layout = QVBoxLayout(); log_layout.addWidget(self.tail_view); log_tab.setLayout(log_layout)
+        log_tab = QWidget()
+        log_layout = QVBoxLayout()
+        # ADDED: same tail controls in ParseOnly Log tab
+        log_controls = QHBoxLayout()  # ADDED
+        log_controls.addWidget(self.btn_pause_tail)  # ADDED
+        log_controls.addWidget(self.btn_autoscroll)  # ADDED
+        log_controls.addStretch(1)  # ADDED
+        log_layout.addLayout(log_controls)  # ADDED
+        log_layout.addWidget(self.tail_view)
+        log_tab.setLayout(log_layout)
 
         # root tabs
         dash = QWidget(); dash_layout = QVBoxLayout(); dash_layout.addLayout(form); dash_layout.addWidget(bottom); dash.setLayout(dash_layout)
@@ -1051,9 +1082,11 @@ class ParseOnlyTab(BaseMonitor):
         self.disp_overlay = TextItem('', color=(200, 0, 0), anchor=(0.5, 1.2)); self.plot_disp.addItem(self.disp_overlay)
         self.graph_tabs.addTab(self.plot_disp, 'Displacement')
 
+        # CHANGED: add legend + names so it’s clear which RMSD curve is which
         self.plot_rmsd = pg.PlotWidget(title='RMSD vs geometry (Å)'); self.plot_rmsd.showGrid(x=True, y=True)
-        self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, symbol='o')
-        self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, symbol='o')
+        self.plot_rmsd.addLegend()  # ADDED
+        self.curve_rmsd_plot = self.plot_rmsd.plot([], [], pen=PEN_LINE, symbol='o', name='vs initial')  # CHANGED
+        self.curve_rmsd_prev = self.plot_rmsd.plot([], [], pen=PEN_DASH_BLUE, symbol='o', name='vs previous')  # CHANGED
         self.rmsd_threshold_line = pg.InfiniteLine(pos=self.rmsd_alarm_threshold, angle=0, pen=PEN_DASH_BLUE); self.plot_rmsd.addItem(self.rmsd_threshold_line)
         self.rmsd_overlay = TextItem('', color=(0, 70, 200), anchor=(0.5, 1.2)); self.plot_rmsd.addItem(self.rmsd_overlay)
         self.graph_tabs.addTab(self.plot_rmsd, 'RMSD')
@@ -1125,4 +1158,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
