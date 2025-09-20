@@ -207,15 +207,28 @@ def kabsch_rmsd(P: List[Tuple[float,float,float]], Q: List[Tuple[float,float,flo
     diff = (Pc @ U) - Qc
     return float(np.sqrt((diff * diff).sum() / len(P)))
 
-def compute_max_displacement(ref: List[Tuple[float, float, float]],
-                             coords: List[Tuple[float, float, float]]) -> float:
-    """Maximum atom displacement relative to the reference geometry."""
+def compute_max_displacement(ref, coords):
+    """Maximum atom displacement relative to the reference geometry (Kabsch-aligned)."""
     ref_arr = np.asarray(ref, float)
     arr = np.asarray(coords, float)
     if ref_arr.shape != arr.shape or len(arr) < 1:
         return float('nan')
-    disp = np.linalg.norm(arr - ref_arr, axis=1)
-    return float(disp.max())
+
+    # Center both
+    Pc = arr - arr.mean(0)
+    Qc = ref_arr - ref_arr.mean(0)
+
+    # Kabsch: rotate P -> Q
+    V, _, Wt = np.linalg.svd(Pc.T @ Qc)
+    if (np.linalg.det(V) * np.linalg.det(Wt)) < 0.0:
+        V[:, -1] *= -1
+    U = V @ Wt
+    aligned = Pc @ U
+
+    # Per-atom distances after optimal superposition
+    dists = np.linalg.norm(aligned - Qc, axis=1)
+    return float(np.max(dists))
+
 
 # ------------------------ Parsing one log pass ------------------------
 def parse_log_file(path: Path, tail_lines: int = 4000) -> LogStatus:
@@ -514,7 +527,8 @@ class BaseMonitor(QWidget):
 
         latest_disp = self.geom_disp[-1] if self.geom_disp else None
         if latest_disp is not None and np.isfinite(latest_disp):
-            self.disp_line.setText(f"{latest_disp:.2f} Å (thr={self.size_alarm_threshold:.1f} Å)")
+            self.disp_line.setText(f"{latest_disp:.2f} Å (aligned; thr={self.size_alarm_threshold:.1f} Å)")
+            #self.disp_line.setText(f"{latest_disp:.2f} Å (thr={self.size_alarm_threshold:.1f} Å)")
             if latest_disp > self.size_alarm_threshold:
                 self.disp_line.setStyleSheet("color: #b00020; font-weight: 700;")
                 if not self.alarm_active:
@@ -1076,7 +1090,8 @@ class ParseOnlyTab(BaseMonitor):
         self.curve_rms = self.plot_rms.plot([], [], pen=PEN_LINE, symbol='o')
         self.graph_tabs.addTab(self.plot_rms, 'RMS Force')
 
-        self.plot_disp = pg.PlotWidget(title='Max atom displacement vs initial (Å)'); self.plot_disp.showGrid(x=True, y=True)
+        self.plot_disp = pg.PlotWidget(title='Max atom displacement vs initial (aligned, Å)')
+        #self.plot_disp = pg.PlotWidget(title='Max atom displacement vs initial (Å)'); self.plot_disp.showGrid(x=True, y=True)
         self.curve_disp = self.plot_disp.plot([], [], pen=PEN_LINE, symbol='o')
         self.disp_threshold_line = pg.InfiniteLine(pos=self.size_alarm_threshold, angle=0, pen=PEN_DASH_RED); self.plot_disp.addItem(self.disp_threshold_line)
         self.disp_overlay = TextItem('', color=(200, 0, 0), anchor=(0.5, 1.2)); self.plot_disp.addItem(self.disp_overlay)
