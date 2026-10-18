@@ -1,0 +1,17 @@
+ Entering Gaussian System, Link 0=g16
+ (Enter /home/user/g16/l302.exe)
+ Leave Link  302 at Sun Oct 18 11:00:00 2026, MaxMem= 536870912 cpu: 1.8 elap: 0.5
+ (Enter /home/user/g16/l502.exe)
+ SCF Done: E(RB3LYP) = -100.923 A.U. after 12 cycles
+ Leave Link  502 at Sun Oct 18 11:00:10 2026, MaxMem= 536870912 cpu: 32.0 elap: 10.0
+ (Enter /home/user/g16/l103.exe)
+ Step number 1 out of a maximum of 60
+ Leave Link  103 at Sun Oct 18 11:00:11 2026, MaxMem= 536870912 cpu: 0.2 elap: 0.1
+ (Enter /home/user/g16/l502.exe)
+ SCF Done: E(RB3LYP) = -101.102 A.U. after 7 cycles
+ Leave Link  502 at Sun Oct 18 11:00:18 2026, MaxMem= 536870912 cpu: 23.0 elap: 7.0
+ (Enter /home/user/g16/l103.exe)
+ Step number 2 out of a maximum of 60
+ Bend failed for angle   2 -   6 -   9
+ FormBX had a problem.
+ Error termination via Lnk1e in /home/user/g16/l103.exe

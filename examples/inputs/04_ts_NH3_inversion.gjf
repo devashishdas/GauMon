@@ -1,0 +1,13 @@
+%mem=2GB
+%nprocshared=2
+%chk=04_ts_NH3_inversion.chk
+#p b3lyp/3-21g opt=(ts,calcfc,noeigentest,maxcycles=35) freq nosymm
+
+GauMon test 04 - Planar NH3 inversion transition state
+
+0 1
+N       0.000000    0.000000    0.000000
+H       1.000000    0.000000    0.000000
+H      -0.500000    0.866025    0.000000
+H      -0.500000   -0.866025    0.000000
+

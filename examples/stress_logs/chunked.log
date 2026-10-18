@@ -1,0 +1,67 @@
+GauMon synthetic SCF stress case; NOT Gaussian output
+ (Enter /mock/g16/l502.exe)
+ Cycle   1  Pass 0  IDiag  1:
+ RMSU=  3.652E-03 CP: 9.56D-01 1.03D-02 7.27D-01
+                    CP:  8.35D-01
+ E= -50.04184514538747 Delta-E= -0.07368576778 Rises=F Damp=F
+ DIIS: error= 3.241E-02 at cycle   1 NSaved=   1.
+ NSaved= 1 IEnMin= 1 EnMin= -50.04184514538747 IErMin= 1 ErrMin= 3.241E-02
+ ErrMax= 3.241E-02 0.00D+00 EMaxC= 1.00D-01 BMatC= 3.03D-01 BMatP= 3.37D+00
+ IDIUse=3 WtCom= 8.97D-01 WtEn= 1.03D-01
+ Coeff-Com: -0.165D+00 0.225D+00 0.274D-01-0.804D-01
+ Coeff-Com:  0.767D+00
+ Coeff-En:  0.000D+00 0.000D+00 0.100D+01
+ Coeff: -0.148D+00 0.202D+00 0.246D-01-0.721D-01
+ Gap= 0.330 Goal= None Shift= 0.000
+ Gap= 0.286 Goal= None Shift= 0.000
+ RMSDP=5.429E-03 MaxDP=1.324E-01 DE=-7.369E-02 OVMax= 5.82D-02
+ Cycle   2  Pass 0  IDiag  1:
+ RMSU=  3.335E-03 CP: 9.56D-01 1.03D-02 7.27D-01
+                    CP:  8.35D-01
+ E= -50.07535211842971 Delta-E= -0.06032880414 Rises=F Damp=F
+ DIIS: error= 3.001E-02 at cycle   2 NSaved=   2.
+ NSaved= 2 IEnMin= 2 EnMin= -50.07535211842971 IErMin= 2 ErrMin= 3.001E-02
+ ErrMax= 3.001E-02 0.00D+00 EMaxC= 1.00D-01 BMatC= 3.03D-01 BMatP= 3.37D+00
+ IDIUse=3 WtCom= 8.97D-01 WtEn= 1.03D-01
+ Coeff-Com: -0.165D+00 0.225D+00 0.274D-01-0.804D-01
+ Coeff-Com:  0.767D+00
+ Coeff-En:  0.000D+00 0.000D+00 0.100D+01
+ Coeff: -0.148D+00 0.202D+00 0.246D-01-0.721D-01
+ Gap= 0.330 Goal= None Shift= 0.000
+ Gap= 0.286 Goal= None Shift= 0.000
+ RMSDP=4.912E-03 MaxDP=1.168E-01 DE=-6.033E-02 OVMax= 5.82D-02
+ Cycle   3  Pass 0  IDiag  1:
+ RMSU=  3.045E-03 CP: 9.56D-01 1.03D-02 7.27D-01
+                    CP:  8.35D-01
+ E= -50.10218240500316 Delta-E= -0.04939304725 Rises=F Damp=F
+ DIIS: error= 2.779E-02 at cycle   3 NSaved=   3.
+ NSaved= 3 IEnMin= 3 EnMin= -50.10218240500316 IErMin= 3 ErrMin= 2.779E-02
+ ErrMax= 2.779E-02 0.00D+00 EMaxC= 1.00D-01 BMatC= 3.03D-01 BMatP= 3.37D+00
+ IDIUse=3 WtCom= 8.97D-01 WtEn= 1.03D-01
+ Coeff-Com: -0.165D+00 0.225D+00 0.274D-01-0.804D-01
+ Coeff-Com:  0.767D+00
+ Coeff-En:  0.000D+00 0.000D+00 0.100D+01
+ Coeff: -0.148D+00 0.202D+00 0.246D-01-0.721D-01
+ Gap= 0.330 Goal= None Shift= 0.000
+ Gap= 0.286 Goal= None Shift= 0.000
+ RMSDP=4.445E-03 MaxDP=1.031E-01 DE=-4.939E-02 OVMax= 5.82D-02
+ Cycle   4  Pass 1  IDiag  1:
+ RMSU=  2.781E-03 CP: 9.56D-01 1.03D-02 7.27D-01
+                    CP:  8.35D-01
+ E= -50.12366641899349 Delta-E= -0.04043960677 Rises=F Damp=F
+ DIIS: error= 2.573E-02 at cycle   4 NSaved=   4.
+ NSaved= 4 IEnMin= 4 EnMin= -50.12366641899349 IErMin= 4 ErrMin= 2.573E-02
+ ErrMax= 2.573E-02 0.00D+00 EMaxC= 1.00D-01 BMatC= 3.03D-01 BMatP= 3.37D+00
+ IDIUse=3 WtCom= 8.97D-01 WtEn= 1.03D-01
+ Coeff-Com: -0.165D+00 0.225D+00 0.274D-01-0.804D-01
+ Coeff-Com:  0.767D+00
+ Coeff-En:  0.000D+00 0.000D+00 0.100D+01
+ Coeff: -0.148D+00 0.202D+00 0.246D-01-0.721D-01
+ Gap= 0.330 Goal= None Shift= 0.000
+ Gap= 0.286 Goal= None Shift= 0.000
+ RMSDP=4.022E-03 MaxDP=9.098E-02 DE=-4.044E-02 OVMax= 5.82D-02
+ SCF Done: E(RHF) = -50.0000 A.U. after 4 cycles
+ (Enter /mock/g16/l103.exe)
+ Step number 1 out of a maximum of 25
+ Cycle  1 Pass 1 IDiag 1:
+ E= -50.1000 Delta-E= -0.10000

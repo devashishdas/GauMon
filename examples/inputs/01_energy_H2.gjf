@@ -1,0 +1,11 @@
+%mem=1GB
+%nprocshared=2
+%chk=01_energy_H2.chk
+#p b3lyp/3-21g sp
+
+GauMon test 01 - H2 single point energy
+
+0 1
+H      0.000000     0.000000     0.000000
+H      0.000000     0.000000     0.740000
+

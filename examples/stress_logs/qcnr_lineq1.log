@@ -1,0 +1,14 @@
+ (Enter /usr/local/gaussian/l508.exe)
+ Quadratic Convergence SCF Method.
+ Iteration   1 EE= -4918.03385767531 Grad=9.105D-03 Max rot= 0.0996 deg.
+ QCNR:  CnvC1=1.32D-08 CnvC2=1.32D-07
+ LinEq1:  Iter=  0 NonCon= 1 RMS=2.71D-04 Max=1.32D-02 NDo=1
+ LinEq1:  Iter=  1 NonCon= 1 RMS=6.93D-04 Max=3.58D-02 NDo=1
+ LinEq1:  Iter=  2 NonCon= 1 RMS=1.00D-06 Max=3.50D-05 NDo=1
+ LinEq1:  Iter=  3 NonCon= 0 RMS=1.82D-09 Max=4.63D-08 NDo=1
+ Linear equations converged to 1.319D-08 1.319D-07 after 3 iterations.
+ Iteration   2 EE= -4918.04008164543 Delta-E= -0.001432882648 Grad=4.732D-03 Max rot=0.0774 deg.
+ QCNR: CnvC1=1.32D-08 CnvC2=1.32D-07
+ LinEq1:  Iter=  0 NonCon= 1 RMS=1.69D-04 Max=8.67D-03 NDo=1
+ LinEq1:  Iter=  1 NonCon= 1 RMS=5.21D-04 Max=2.11D-02 NDo=1
+ LinEq1:  Iter=  2 NonCon= 1 RMS=1.35D-03 Max=8.43D-02 NDo=1

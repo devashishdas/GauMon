@@ -1,0 +1,69 @@
+ Gaussian 16: MOCK TEST OUTPUT -- NOT A REAL GAUSSIAN CALCULATION
+ (Enter /mock/g16/l101.exe)
+ Charge = 0 Multiplicity = 1
+ #p b3lyp/3-21g opt freq
+ (Enter /mock/g16/l502.exe)
+ Step number 1 out of a maximum of 35
+ SCF Done:  E(RB3LYP) =  -76.006000000     A.U. after   7 cycles
+ RMS Force = 1.00000E-02
+ Standard orientation:
+ ---------------------------------------------------------------------
+ Center     Atomic      Atomic             Coordinates (Angstroms)
+ Number     Number       Type             X           Y           Z
+ ---------------------------------------------------------------------
+     1          8           0        0.000000    0.000000    0.000000
+     2          1           0        0.000000    0.720000    0.630000
+     3          1           0        0.000000   -0.720000    0.470000
+ ---------------------------------------------------------------------
+ Step number 2 out of a maximum of 35
+ SCF Done:  E(RB3LYP) =  -76.012000000     A.U. after   8 cycles
+ RMS Force = 2.50000E-03
+ Standard orientation:
+ ---------------------------------------------------------------------
+ Center     Atomic      Atomic             Coordinates (Angstroms)
+ Number     Number       Type             X           Y           Z
+ ---------------------------------------------------------------------
+     1          8           0        0.000000    0.000000    0.000000
+     2          1           0        0.000000    0.720000    0.710000
+     3          1           0        0.000000   -0.720000    0.390000
+ ---------------------------------------------------------------------
+ Step number 3 out of a maximum of 35
+ SCF Done:  E(RB3LYP) =  -76.018000000     A.U. after   9 cycles
+ RMS Force = 1.11111E-03
+ Standard orientation:
+ ---------------------------------------------------------------------
+ Center     Atomic      Atomic             Coordinates (Angstroms)
+ Number     Number       Type             X           Y           Z
+ ---------------------------------------------------------------------
+     1          8           0        0.000000    0.000000    0.000000
+     2          1           0        0.000000    0.720000    0.790000
+     3          1           0        0.000000   -0.720000    0.310000
+ ---------------------------------------------------------------------
+ Step number 4 out of a maximum of 35
+ SCF Done:  E(RB3LYP) =  -76.024000000     A.U. after   10 cycles
+ RMS Force = 6.25000E-04
+ Standard orientation:
+ ---------------------------------------------------------------------
+ Center     Atomic      Atomic             Coordinates (Angstroms)
+ Number     Number       Type             X           Y           Z
+ ---------------------------------------------------------------------
+     1          8           0        0.000000    0.000000    0.000000
+     2          1           0        0.000000    0.720000    0.870000
+     3          1           0        0.000000   -0.720000    0.230000
+ ---------------------------------------------------------------------
+ Step number 5 out of a maximum of 35
+ SCF Done:  E(RB3LYP) =  -76.030000000     A.U. after   11 cycles
+ RMS Force = 4.00000E-04
+ Standard orientation:
+ ---------------------------------------------------------------------
+ Center     Atomic      Atomic             Coordinates (Angstroms)
+ Number     Number       Type             X           Y           Z
+ ---------------------------------------------------------------------
+     1          8           0        0.000000    0.000000    0.000000
+     2          1           0        0.000000    0.720000    0.950000
+     3          1           0        0.000000   -0.720000    0.150000
+ ---------------------------------------------------------------------
+ Optimization completed.
+ (Enter /mock/g16/l716.exe)
+ Frequencies --  1600.0000   3700.0000  3800.0000
+ Normal termination of Gaussian 16 at mock time

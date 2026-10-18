@@ -1,0 +1,12 @@
+%mem=1GB
+%nprocshared=2
+%chk=02_opt_freq_H2O.chk
+#p b3lyp/3-21g opt freq
+
+GauMon test 02 - Water optimization followed by frequencies
+
+0 1
+O      0.000000     0.000000     0.000000
+H      0.000000     0.760000     0.590000
+H      0.000000    -0.760000     0.590000
+

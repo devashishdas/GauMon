@@ -1,0 +1,6 @@
+# Alternative pip setup in a Python 3.10+ environment
+numpy>=1.24,<3
+psutil>=5.9,<8
+PyQt5>=5.15,<6
+PyQt5-sip>=12.13,<13
+pyqtgraph>=0.13,<0.15

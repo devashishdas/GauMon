@@ -1,0 +1,19 @@
+ Gaussian 16: MOCK TEST OUTPUT -- NOT A REAL GAUSSIAN CALCULATION
+ (Enter /mock/g16/l101.exe)
+ Charge = 0 Multiplicity = 1
+ #p b3lyp/3-21g opt freq
+ (Enter /mock/g16/l502.exe)
+ SCF Done:  E(RB3LYP) =  -76.006000000     A.U. after   7 cycles
+ RMS Force = 1.00000E-02
+ Standard orientation:
+ ---------------------------------------------------------------------
+ Center     Atomic      Atomic             Coordinates (Angstroms)
+ Number     Number       Type             X           Y           Z
+ ---------------------------------------------------------------------
+     1          8           0        0.000000    0.000000    0.000000
+     2          1           0        0.000000    0.720000    0.630000
+     3          1           0        0.000000   -0.720000    0.470000
+ ---------------------------------------------------------------------
+ (Enter /mock/g16/l716.exe)
+ Frequencies --  1600.0000   3700.0000  3800.0000
+ Normal termination of Gaussian 16 at mock time

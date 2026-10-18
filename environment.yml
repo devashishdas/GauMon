@@ -1,0 +1,11 @@
+name: gaumon-cpu
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - numpy>=1.24,<3
+  - psutil>=5.9,<8
+  - pyqt=5.15.*
+  - pyqt5-sip
+  - pyqtgraph>=0.13,<0.15

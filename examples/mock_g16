@@ -1,0 +1,3 @@
+#!/usr/bin/env python3
+from mock_g16 import main
+raise SystemExit(main())

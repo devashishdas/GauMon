@@ -1,0 +1,12 @@
+ Cartesian Forces:  Max     0.010309795 RMS     0.003237617
+ Leave Link  716 at Sun Oct 18 04:05:10 2026, MaxMem= 6710886400 cpu: 0.3 elap: 0.0
+ (Enter /home/exampleuser/g16/l103.exe)
+ Berny optimization.
+ Using GEDIIS/GDIIS optimizer.
+ Bend failed for angle    19 -    27 -    25
+ Tors failed for dihedral    20 -    19 -    27 -    25
+ Tors failed for dihedral    21 -    19 -    27 -    25
+ Tors failed for dihedral     8 -    25 -    27 -    19
+ Tors failed for dihedral    26 -    25 -    27 -    19
+ FormBX had a problem.
+ Error termination via Lnk1e in /home/exampleuser/g16/l103.exe at Sun Oct 18 04:05:10 2026.
