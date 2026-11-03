@@ -1,3 +1,9 @@
+## Unreleased — installation and window behavior (2026-11-03)
+
+- Removed the automatic `--demo-ui` startup option.
+- Application launches in a normal maximized window, with no full-screen button or shortcuts.
+- Installer adds optional, backed-up `~/.bashrc` PATH integration and three system-independent user commands: `gaumon`, `Gaumon`, and `GauMon`.
+
 ## 7.1.1 — Session Jobs GUI startup hotfix (2026-10-19)
 
 - Fixed immediate startup failure in `gaumon_ext/gui.py` when restored session entries had no attached reader (`AttributeError: 'NoneType' object has no attribute 'termination'`).

@@ -116,7 +116,7 @@ def main(argv=None) -> int:
     cli=argparse.ArgumentParser(description='GauMon standalone CPU monitor, tests, and Gaussian case validator')
     modes=cli.add_mutually_exclusive_group()
     modes.add_argument('--gui',action='store_true',help='launch Qt standalone desktop (default)')
-    modes.add_argument('--demo-ui',action='store_true',help='Qt desktop and mock opt+freq run (no Gaussian)')
+    # The public GUI no longer has an automatic demo launch mode.
     modes.add_argument('--test',action='store_true',help='run headless automated tests')
     modes.add_argument('--env-check',action='store_true',help='verify Python/Conda environment')
     modes.add_argument('--list-cases',action='store_true',help='show seven basic/advanced Gaussian test templates')
@@ -263,7 +263,7 @@ def main(argv=None) -> int:
         except ImportError as exc:
             LOG.error('Qt GUI dependencies unavailable: %s\nRun: python run.py --env-check',exc)
             return 2
-        return run_gui(mock_on_start=a.demo_ui, attach_log=a.attach.resolve() if a.attach else None, attach_pid=a.pid)
+        return run_gui(attach_log=a.attach.resolve() if a.attach else None, attach_pid=a.pid)
     except (OSError,ValueError,RuntimeError) as exc:
         LOG.exception('GauMon operation failed') if a.debug else LOG.error('%s',exc)
         return 2

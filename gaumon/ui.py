@@ -188,7 +188,7 @@ class MoleculeCanvas(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, *, mock_on_start=False):
+    def __init__(self):
         super().__init__()
         self.monitor=Monitor(); self.mock_dir: Optional[tempfile.TemporaryDirectory]=None
         self.last_session=None
@@ -224,22 +224,8 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(STYLE)
         self._build()
         self.work_entry.setText(os.getcwd())
-        self.shortcut_full=QShortcut(QKeySequence('F11'),self)
-        self.shortcut_full.activated.connect(self.toggle_fullscreen)
-        self.shortcut_exit=QShortcut(QKeySequence('Escape'),self)
-        self.shortcut_exit.activated.connect(self.exit_fullscreen)
+        # Window manager controls maximize/restore; no fullscreen shortcuts.
         self.timer=QTimer(self);self.timer.setInterval(750);self.timer.timeout.connect(self.tick);self.timer.start()
-        if mock_on_start: QTimer.singleShot(200,lambda:self.simulate('optfreq'))
-
-    def toggle_fullscreen(self):
-        if self.isFullScreen():self.showMaximized()
-        else:self.showFullScreen()
-        self.full_btn.setText('Exit full screen  Esc' if self.isFullScreen() else 'Full screen  F11')
-
-    def exit_fullscreen(self):
-        if self.isFullScreen():
-            self.showMaximized()
-            self.full_btn.setText('Full screen  F11')
 
     def _panel(self) -> tuple[QFrame,QVBoxLayout]:
         panel=QFrame();panel.setObjectName('panel')
@@ -256,9 +242,6 @@ class MainWindow(QMainWindow):
         hl.addStretch(1)
         self.header_state=label('● READY','pill'); hl.addWidget(self.header_state)
         hl.addWidget(label('Live calculation insights','small'))
-        self.full_btn=QPushButton('Full screen  F11');self.full_btn.setObjectName('subtle')
-        self.full_btn.setToolTip('F11 switches to immersive full-screen view. Press Esc to restore the maximized window.')
-        self.full_btn.clicked.connect(self.toggle_fullscreen);hl.addWidget(self.full_btn)
         outer.addWidget(header)
         self.failure_banner=QFrame();self.failure_banner.setObjectName('warningBanner')
         alert=row_layout(9);alert.setContentsMargins(14,7,14,7);self.failure_banner.setLayout(alert)
@@ -1488,18 +1471,14 @@ class MainWindow(QMainWindow):
         event.accept()
 
 
-def run_gui(*,mock_on_start=False,attach_log=None,attach_pid=None) -> int:
+def run_gui(*,attach_log=None,attach_pid=None) -> int:
     # Force pyqtgraph's 2D QPainter path rather than any OpenGL backend.
     pg.setConfigOptions(useOpenGL=False, antialias=True, background='w', foreground=C['sub'])
     app=QApplication.instance() or QApplication([])
     app.setApplicationName('GauMon Desktop CPU')
     app.setStyle('Fusion')
-    window=MainWindow(mock_on_start=mock_on_start)
-    if os.environ.get('GAUMON_START_MAXIMIZED','').strip() == '1':
-        window.showMaximized()  # XRDP fallback if full-screen integration is troublesome.
-    else:
-        window.showFullScreen()  # Full screen by default; F11/Esc restores maximized mode.
-        window.full_btn.setText('Exit full screen  Esc')
+    window=MainWindow()
+    window.showMaximized()  # Normal decorated, maximized window (never exclusive full screen).
     if attach_log is not None:
         QTimer.singleShot(100,lambda:window.attach_path(Path(attach_log),attach_pid))
     return app.exec_()

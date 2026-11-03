@@ -25,9 +25,15 @@ class CLITests(unittest.TestCase):
         p=self.call('--validate',str(ROOT/'examples'/'inputs'/'01_energy_H2.gjf'))
         self.assertEqual(p.returncode,0,p.stderr)
 
-    def test_env_check_reports_expected_name(self):
+    def test_env_check_reports_runtime_dependencies(self):
         p=self.call('--env-check')
-        self.assertIn('gaumon-cpu',p.stdout)
+        self.assertEqual(p.returncode,0,p.stdout+p.stderr)
+        self.assertIn('GauMon Desktop',p.stdout)
+        self.assertIn('Python executable:',p.stdout)
+        self.assertIn('OK      PyQt5.sip:',p.stdout)
+        self.assertIn('OK      PyQt5.QtWidgets:',p.stdout)
+        self.assertIn('OK      pyqtgraph:',p.stdout)
+        self.assertNotIn('FAILED  ',p.stdout)
 
     def test_gui_module_compiles_even_if_qt_not_installed(self):
         import py_compile

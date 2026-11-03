@@ -1,6 +1,9 @@
+<!-- GAUMON_INSTALL_WIZARD_V3 -->
+> **Install GauMon:** From a fresh clone, run `bash install.sh` (interactive) or `bash install.sh --yes --bashrc` (automatic). Choose Conda or Python venv; the app opens maximized. The installer optionally adds a small backed-up PATH block to `~/.bashrc`. Then open a new terminal and run `gaumon` or `Gaumon` from any directory. See [INSTALL_LINUX.md](INSTALL_LINUX.md).
+
 # New in v7.1.1
 
-- **Full screen on launch** (F11 toggle; Esc maximize), with `GAUMON_START_MAXIMIZED=1` XRDP fallback.
+- **Maximized window on launch** with standard window decorations; no automatic demonstration or full-screen mode.
 - **CWD defaults** for Gaussian new-job directory, file choosers, exports and running logs.
 - **Auto input viewer:** starting a `.gjf` job displays that exact source; attaching a `.log` loads a verified matching input in the same folder, or reports when it cannot safely identify the source. Read-only resumed sessions retain explicit input provenance.
 - **Keyword guide:** line-numbered input editor now provides explanations for Gaussian `%` / `#` / route keywords and important scientific cautions.
@@ -31,7 +34,7 @@ conda env create -f environment.yml
 conda activate gaumon-cpu
 python run.py --env-check
 python run.py --test
-python run.py --demo-ui
+python run.py --gui
 ```
 
 If the environment already exists, update rather than recreate it:
@@ -57,7 +60,7 @@ python run.py --gui
 ```bash
 conda activate gaumon-cpu
 python run.py --gui             # main desktop app
-python run.py --demo-ui         # opens GUI and starts synthetic opt+freq
+python run.py --gui             # normal GUI, no automatic mock calculation
 python run.py --list-cases      # show shipped Gaussian test inputs
 python run.py --env-check       # dependency / environment diagnostics
 ```
@@ -266,7 +269,7 @@ If a minimal validated input still crashes `l101.exe` with segmentation violatio
 ```bash
 ./run_tests.sh                     # captures headless test log
 python run.py --env-check
-python run.py --demo-ui             # manual GUI smoke test
+python run.py --gui             # manually inspect maximized GUI
 ```
 
 Expected **synthetic** results (not actual quantum chemistry):
@@ -303,7 +306,7 @@ GauMon_Desktop_CPU_v5/
 
 ## Known limitations and release gates
 
-1. **GUI rendering must be checked on your Rocky/XRDP workstation.** Qt dependencies are unavailable in this build environment. Python compiles and headless tests run here, but the exact pixel layout has **not** been verified by taking a live Qt screenshot. Run `python run.py --demo-ui` at both 1366×768 and 1920×1080 before publishing the app.
+1. **GUI rendering must be checked on your Rocky/XRDP workstation.** Qt dependencies are unavailable in this build environment. Python compiles and headless tests run here, but the exact pixel layout has **not** been verified by taking a live Qt screenshot. Run `python run.py --gui` at both 1366×768 and 1920×1080 before publishing the app.
 2. No GUI-global scroll area is used. On displays smaller than the 1080×650 minimum, widgets may not fit. Increase desktop resolution or OS workspace size rather than squeezing scientific plots below readable dimensions.
 3. Geometry projection is a CPU QPainter 2D view, not rotatable three-dimensional molecular graphics.
 4. External PID attachment is user-supplied; file growth without a verified process does not prove Gaussian is currently running.

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: 'If you use GauMon, please cite this software repository and its versioned release.'
+title: 'GauMon: A desktop monitor for Gaussian electronic-structure calculations'
+type: software
+authors:
+  - family-names: Das
+    given-names: Devashish
+repository-code: 'https://github.com/devashishdas/GauMon'
+url: 'https://github.com/devashishdas/GauMon'
+license: MIT
+version: 7.1.1
+keywords:
+  - Gaussian
+  - quantum chemistry
+  - electronic structure
+  - monitoring
+  - PyQt5

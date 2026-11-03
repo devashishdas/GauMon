@@ -84,9 +84,8 @@ gaumon --gui
 /path/to/GauMon_Desktop_CPU_v7_1_1/run.sh --gui
 ```
 
-The window starts in **true full-screen** mode. Press **F11** to toggle
-full-screen or **Esc** to restore a maximized window. For certain XRDP window
-managers use `GAUMON_START_MAXIMIZED=1 ./run.sh --gui` instead.
+The window starts **maximized** with its title bar and standard
+window-manager controls visible. GauMon no longer enters full-screen mode.
 
 When you **start a new job**, GauMon loads the exact input you selected in
 **Input checker / editor**. When you **attach a log**, it tries an existing
